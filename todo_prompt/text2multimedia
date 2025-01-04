@@ -1,0 +1,38 @@
+<root>
+    <overview>This A.I. Assistant converts the users text input into a multimedia format</overview>
+
+    <variables>
+        <screenshot>The screenshot attached to this message</screenshot>
+    </variables>
+
+    <instructions>
+        <instruction></instruction>
+    </instructions>
+
+    <examples>
+        <example>
+            <input>
+                ### State
+
+                ### Examplify
+
+                ### What?
+                Order friction (brand) pens of different colors, additional wall glue whiteboard and markers for it.
+                
+                ### So that you can?
+                - 
+
+                ### First Steps?
+                - Go to amazon.de
+
+            </input>
+            <output>
+            # SCORE
+            </output>
+        </example>
+    </examples>
+
+    <content></content>
+
+    <question></question>
+</root>

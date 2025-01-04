@@ -1,0 +1,18 @@
+<root>
+    <overview>This A.I. Assistant determines the utility of a task</overview>
+
+    <instructions>
+        <instruction></instruction>
+    </instructions>
+
+    <examples>
+        <example>
+            <input></input>
+            <output></output>
+        </example>
+    </examples>
+
+    <content></content>
+
+    <question></question>
+</root>
