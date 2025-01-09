@@ -1,0 +1,146 @@
+<root>
+    <overview>
+        - I'd like to be able to run llm prompts, which get fed my current clipboard selection as an input from anywhere on my mac.
+        - In order to do so I have already built a simplified version of it, an automator app which runs #variables.shell_script 
+        - It uses the current clipboard selection as the entire input to the llm.
+        - The next step in building this workflow is to extend it, such that the clipboard selection is no longer the entire prompt, but gets inserted into a prompt template like #variables.prompt_template
+        - This should be done using a script like #variables.dynamic_prompt_building.py
+    </overview>
+
+    <variables>
+        <shell_script>
+            """bash
+            #!/bin/bash
+
+MODEL=${1:-"llama3.2:latest"}
+paste="$(pbpaste)"
+
+if [ -z "$paste" ]; then
+    echo "Error: Clipboard is empty" >&2
+    exit 1
+fi
+
+if ! copy=$(/usr/local/bin/ollama run "$MODEL" "$paste" 2>/dev/null); then
+    echo "Error: Failed to run ollama" >&2
+    exit 1
+fi
+
+echo "$copy" | pbcopy
+            """
+        </shell_script>
+
+        <dynamic_prompt_building>
+            """python
+            import os
+import re
+import argparse
+
+
+def inject_pipeline_into_template(template_file, final_document):
+    """
+    Injects content from pipeline files into a template document by replacing placeholders.
+
+    This function reads a template file containing placeholders in the format {{file:filename}},
+    replaces each placeholder with the content of the corresponding pipeline file, and writes
+    the result to a final document.
+
+    Args:
+        template_file (str): Path to the template file containing placeholders.
+        final_document (str): Path where the final document with replaced content will be saved.
+
+    Example:
+        If template.txt contains:
+        "Here is pipeline content: {{file:pipeline1.txt}}"
+        And pipeline1.txt contains "Hello World"
+        Then the final document will contain:
+        "Here is pipeline content: Hello World"
+
+    Note:
+        - Placeholders should be in the format {{file:filename}}
+        - If a referenced pipeline file is not found, an error message will be inserted
+    """
+    # Read the template file containing placeholders
+    with open(template_file, "r") as template:
+        template_content = template.read()
+
+    # Function to replace placeholders with corresponding pipeline file content
+    def replace_placeholder(match):
+        pipeline_file_name = match.group(
+            1
+        ).strip()  # Extract file name from placeholder
+        if os.path.exists(pipeline_file_name):
+            with open(pipeline_file_name, "r") as pipeline_file:
+                return pipeline_file.read()  # Insert the content of the pipeline file
+        else:
+            return f"[Error: Pipeline file '{pipeline_file_name}' not found]"
+
+    # Replace all placeholders in the format {{file:filename}}
+    filled_template = re.sub(r"{{file:(.+?)}}", replace_placeholder, template_content)
+
+    # Write the final document with replaced placeholders
+    with open(final_document, "w") as final_output:
+        final_output.write(filled_template)
+
+
+def main():
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Inject pipeline content into template file.')
+    parser.add_argument('--template', help='Path to the template file containing placeholders')
+    parser.add_argument('--output', help='Path where the final document will be saved')
+    
+    # Parse arguments
+    args = parser.parse_args()
+
+    # Run the pipeline injection with command line arguments
+    inject_pipeline_into_template(args.template, args.output)
+    print(f"The final document has been written to {args.output}")
+
+if __name__ == "__main__":
+    main()
+
+            """
+        </dynamic_prompt_building>
+
+        <prompt_template>
+            """xml
+            <root>
+    <overview>
+        - I'd like to be able to run llm prompts, which get fed my current clipboard selection as an input from anywhere on my mac.
+        - In order to do so I have already built a simplified version of it, an automator app which runs #variables.shell_script 
+        - It uses the current clipboard selection as the entire input to the llm.
+        - The next step in building this workflow is to extend it, such that the clipboard selection is no longer the entire prompt, but gets inserted into a prompt template like #variables.prompt_template
+        - This should be done using a script like #variables.dynamic_prompt_building.py
+    </overview>
+
+    <variables>
+        <shell_script>
+            """bash
+            {{file:ollama_shell_script.sh}}
+            """
+        </shell_script>
+
+        <dynamic_prompt_building>
+            """python
+            {{file:dynamic_prompt_building.py}}
+            """
+        </dynamic_prompt_building>
+
+        <prompt_template>
+            """xml
+            {{file:prompt_template.xml}}
+            """
+        </prompt_template>
+    </variables>
+
+    <question>
+        - What is the most convenient way to achieve my goal?
+    </question>
+</root>
+            """
+        </prompt_template>
+    </variables>
+
+    <question>
+        - What is the most convenient way to achieve my goal?
+    </question>
+</root>

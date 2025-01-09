@@ -1,0 +1,22 @@
+<root>
+    <overview>{{file:dynamic_prompt_template.py}} inserts text snippets but they dont have proper indentation as can be seen in {{file:output.xml}}</overview>
+
+    <definitions>
+        <zebra></zebra>
+    </definitions>
+
+    <instructions>
+        <instruction></instruction>
+    </instructions>
+
+    <examples>
+        <example>
+            <input></input>
+            <output></output>
+        </example>
+    </examples>
+
+    <content></content>
+
+    <question></question>
+</root>
