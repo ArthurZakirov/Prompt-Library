@@ -16,13 +16,8 @@ You will receive an automatically generated transcript of a speech. Due to the a
 
 **Output Format**:
 - Do not return any explanatory remarks about what you did.
-- Dont document your process
 - Only return the refined text version and nothing else
 
-**Length**:
-- Your refined version should be shorter than the original one
-- Extract the essence
-- Do not invent anything that isnt there
 
 # TRANSCRIPT
-{{file:clipboard_content.txt}}
+Ic hrelaly think that its imüportant to relax and not think too much about what will happen

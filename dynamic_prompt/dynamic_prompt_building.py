@@ -7,7 +7,7 @@ def inject_pipeline_into_template(template_file, final_document):
     """
     Injects content from pipeline files into a template document by replacing placeholders.
 
-    This function reads a template file containing placeholders in the format {{file:filename}},
+    This function reads a template file containing placeholders in the format {{inject:filename}},
     replaces each placeholder with the content of the corresponding pipeline file, and writes
     the result to a final document.
 
@@ -17,13 +17,13 @@ def inject_pipeline_into_template(template_file, final_document):
 
     Example:
         If template.txt contains:
-        "Here is pipeline content: {{file:pipeline1.txt}}"
+        "Here is pipeline content: {{inject:pipeline1.txt}}"
         And pipeline1.txt contains "Hello World"
         Then the final document will contain:
         "Here is pipeline content: Hello World"
 
     Note:
-        - Placeholders should be in the format {{file:filename}}
+        - Placeholders should be in the format {{inject:filename}}
         - If a referenced pipeline file is not found, an error message will be inserted
     """
     # Read the template file containing placeholders
@@ -41,8 +41,8 @@ def inject_pipeline_into_template(template_file, final_document):
         else:
             return f"[Error: Pipeline file '{pipeline_file_name}' not found]"
 
-    # Replace all placeholders in the format {{file:filename}}
-    filled_template = re.sub(r"{{file:(.+?)}}", replace_placeholder, template_content)
+    # Replace all placeholders in the format {{inject:filename}}
+    filled_template = re.sub(r"{{inject:(.+?)}}", replace_placeholder, template_content)
 
     # Write the final document with replaced placeholders
     with open(final_document, "w") as final_output:
@@ -52,10 +52,10 @@ def inject_pipeline_into_template(template_file, final_document):
 def main():
     # Set up argument parser
     parser = argparse.ArgumentParser(description='Inject pipeline content into template file.')
-    parser.add_argument('--template', help='Path to the template file containing placeholders')
-    parser.add_argument('--output', help='Path where the final document will be saved')
+    parser.add_argument('template', help='Path to the template file containing placeholders')
+    parser.add_argument('output', help='Path where the final document will be saved')
     
-# Parse arguments
+    # Parse arguments
     args = parser.parse_args()
 
     # Run the pipeline injection with command line arguments
